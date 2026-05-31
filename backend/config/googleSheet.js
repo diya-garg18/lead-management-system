@@ -17,7 +17,7 @@ const getSheet = async () => {
 
   await doc.loadInfo();
 
-  return doc.sheetsByTitle["Sheet1"];
+  return doc.sheetsByTitle["Form Responses 1"];
 };
 
 module.exports = getSheet;

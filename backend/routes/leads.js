@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const getSheet = require("../config/googleSheet");
-
+const transporter = require("../config/mailer");
 router.get("/", async (req, res) => {
   try {
     const sheet = await getSheet();
@@ -52,6 +52,27 @@ router.put("/:rowNumber", async (req, res) => {
 
     res.json({
       message: "Status updated",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+router.get("/test-email", async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: "Lead Management Test",
+      text: "Email sending is working successfully!",
+    });
+
+    res.json({
+      message: "Email sent successfully",
     });
   } catch (error) {
     console.error(error);
