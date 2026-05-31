@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { getLeads } from "./services/leadService";
+import {
+  getLeads,
+  updateLeadStatus,
+} from "./services/leadService";
 import LeadsTable from "./components/LeadsTable";
 
 function App() {
@@ -18,11 +21,27 @@ function App() {
     }
   };
 
+  const handleStatusChange = async (
+  rowNumber,
+  status
+) => {
+  try {
+    await updateLeadStatus(
+      rowNumber,
+      status
+    );
+
+    fetchLeads();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Lead Management Dashboard</h1>
 
-      <LeadsTable leads={leads} />
+      <LeadsTable leads={leads} onStatusChange={handleStatusChange} />
     </div>
   );
 }
