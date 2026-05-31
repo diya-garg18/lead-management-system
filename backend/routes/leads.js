@@ -10,14 +10,49 @@ router.get("/", async (req, res) => {
     const rows = await sheet.getRows();
 
     const leads = rows.map((row) => ({
-      name: row.get("Name"),
-      email: row.get("Email"),
-      phone: row.get("Phone"),
-      status: row.get("Status"),
-      submittedAt: row.get("Submitted At"),
-    }));
+  rowNumber: row.rowNumber,
+  name: row.get("Name"),
+  email: row.get("Email"),
+  phone: row.get("Phone"),
+  status: row.get("Status"),
+  submittedAt: row.get("Submitted At"),
+}));
 
     res.json(leads);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+router.put("/:rowNumber", async (req, res) => {
+    console.log("BODY", req.body);
+  try {
+    const { rowNumber } = req.params;
+    const { status } = req.body;
+
+    const sheet = await getSheet();
+    const rows = await sheet.getRows();
+
+    const row = rows.find(
+      (r) => r.rowNumber === Number(rowNumber)
+    );
+
+    if (!row) {
+      return res.status(404).json({
+        message: "Lead not found",
+      });
+    }
+
+    row.set("Status", status);
+    await row.save();
+
+    res.json({
+      message: "Status updated",
+    });
   } catch (error) {
     console.error(error);
 
