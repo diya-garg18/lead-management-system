@@ -1,3 +1,5 @@
 node_modules
 .env
 dist
+
+backend/config/service-account.json
