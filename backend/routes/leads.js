@@ -83,4 +83,35 @@ router.get("/test-email", async (req, res) => {
   }
 });
 
+router.post("/send-followup", async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Thank You for Your Submission",
+      html: `
+        <h2>Hello ${name},</h2>
+        <p>Thank you for submitting your details.</p>
+        <p>We have received your information and will contact you shortly.</p>
+        <br/>
+        <p>Regards,</p>
+        <p>Lead Management Team</p>
+      `,
+    });
+
+    res.json({
+      message: "Follow-up email sent",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+
 module.exports = router;
